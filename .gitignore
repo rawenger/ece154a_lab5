@@ -1,0 +1,20 @@
+# Sigasi Porject Files
+.library_mapping.xml
+.project
+.settings
+
+# ModelSim Project Files
+lab5.mpf
+work
+*.bak
+*.wlf
+*.mti
+
+# Lab report
+*.docx
+*.xlsx
+*.pdf
+
+.DS_Store
+*.jpeg
+*.do
