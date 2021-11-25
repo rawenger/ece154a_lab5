@@ -8,13 +8,14 @@
 `define DECODE    'h0030 // 1
 `define MEM_ADR   'h0420 // 2
 `define MEM_READ  'h0520 // 3
-`define MEM_WRITE 'h25a0 // 4
-`define R_EXEC    'h0482 // 5
-`define ALU_WB    'h0c40 // 6
-`define BR_EXEC   'h0645 // 7
-`define ADDI_EXEC 'h0464 // 8
-`define ADDI_WB   'h0c24 // 9
-`define JMP_EXEC  'h4428 // 10
+`define MEM_WB    'h0ca0 // 4
+`define MEM_WRITE 'h25a0 // 5
+`define R_EXEC    'h0482 // 6
+`define ALU_WB    'h0c40 // 7
+`define BR_EXEC   'h0645 // 8
+`define ADDI_EXEC 'h0464 // 9
+`define ADDI_WB   'h0c24 // 10
+`define JMP_EXEC  'h4428 // 11
 
 
 module main_decoder(
@@ -43,8 +44,8 @@ module main_decoder(
 
   always @(posedge clk) begin
     case (ctrl)
-      FETCH: ctrl <= DECODE;
-      DECODE: 
+      `FETCH: ctrl <= `DECODE;
+      `DECODE: 
         casex (op)
           6'b000000: ctrl <= `R_EXEC; // R-type
           6'b000010: ctrl <= `JMP_EXEC; // j
@@ -53,21 +54,21 @@ module main_decoder(
           6'b10x011: ctrl <= `MEM_ADR; // lw, sw
           default: ctrl <= 'hxxxxxxxx; // invalid
         endcase
-      MEM_ADR: 
+      `MEM_ADR: 
         case (op)
           6'b100011: ctrl <= `MEM_READ; // lw
           6'b101011: ctrl <= `MEM_WB; // sw
           default: ctrl <= 'hxxxxxxxx; // invalid
         endcase
-      MEM_READ: ctrl <= `MEM_WB;
-      MEM_WB: ctrl <= FETCH;
-      MEM_WRITE: ctrl <= FETCH;
-      R_EXEC: ctrl <= ALU_WB;
-      ALU_WB: ctrl <= FETCH;
-      BR_EXEC: ctrl <= FETCH;
-      ADDI_EXEC: ctrl <= ADDI_WB;
-      ADDI_WB: ctrl <= FETCH;
-      JMP_EXEC: ctrl <= FETCH;
+      `MEM_READ: ctrl <= `MEM_WB;
+      `MEM_WB: ctrl <= `FETCH;
+      `MEM_WRITE: ctrl <= `FETCH;
+      `R_EXEC: ctrl <= `ALU_WB;
+      `ALU_WB: ctrl <= `FETCH;
+      `BR_EXEC: ctrl <= `FETCH;
+      `ADDI_EXEC: ctrl <= `ADDI_WB;
+      `ADDI_WB: ctrl <= `FETCH;
+      `JMP_EXEC: ctrl <= `FETCH;
       default: ctrl <= 'hxxxxxxxx;
     endcase
   end
