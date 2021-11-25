@@ -25,16 +25,17 @@ module main_decoder(
   output irwrite, regwrite,
   output alusrca, branch, 
   output iord, memtoreg,
-  output regdst, alusrcb[1:0],
-  output pcsrc[1:0], aluop[1:0]
+  output regdst,
+  output [1:0] alusrcb,
+  output [1:0] pcsrc, aluop
 );
   
   integer ctrl, nextstate;
 
   reg[8:0] ctrl;
   assign {pcwrite, memwrite, irwrite, regwrite, alusrca,
-          branch, iord, memtoreg, regdst, alusrcb[1:0], 
-          pcsrc[1:0], aluop[1:0]} = ctrl;
+          branch, iord, memtoreg, regdst, alusrcb, 
+          pcsrc, aluop} = ctrl;
   
   always @(posedge rst) begin
     ctrl <= FETCH;

@@ -78,7 +78,7 @@ module datapath(input        clk, reset,
   
   wire [31:0] instr, data;
   
-  wire [31:0] pcjump;
+  wire [31:0] pcjump, pc;
   
   assign op = instr[31:26];
   assign funct = instr[5:0];
