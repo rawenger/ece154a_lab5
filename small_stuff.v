@@ -57,7 +57,8 @@ module mux4to1#(parameter width=32)
 endmodule
 
 // left-shift by 2
-module sll2(input [31:0] in, output [31:0] out);
+module sll2#(parameter inwidth=32, parameter outwidth=32)
+(input [inwidth-1:0] in, output [outwidth-1:0] out);
   assign out = in << 2;
 endmodule
 

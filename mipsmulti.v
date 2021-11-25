@@ -69,7 +69,7 @@ module datapath(input        clk, reset,
   wire [31:0] signimm, signimmsh, zeroimm;
   wire [27:0] immsh;
   
-  wire [31:0] srca, srcb;
+  wire [31:0] srca, srcb, aluout;
   wire [31:0] result;
   
   wire [31:0] rd1, rd2;
@@ -79,6 +79,8 @@ module datapath(input        clk, reset,
   wire [31:0] instr, data;
   
   wire [31:0] pcjump, pc;
+
+  wire [31:0] a;
   
   assign op = instr[31:26];
   assign funct = instr[5:0];
@@ -91,7 +93,7 @@ module datapath(input        clk, reset,
   // PC logic
   assign pcjump = {pc[31:28], immsh};
   sll2 signsh(signimm, signimmsh);
-  sll2 sh(instr[25:0], immsh);
+  sll2#(26,28) sh(instr[25:0], immsh);
 //  adder pcadd2(pcplus4, signimmsh, pcbranch);
   mux4to1 pc_sel(pcsrc, aluresult, aluout, 
           // change pc to pcplus4 if j's don't work!
@@ -107,15 +109,27 @@ module datapath(input        clk, reset,
                 writereg, result, rd1, rd2);
   mux2to1 #(5) a3_sel(regdst, instr[20:16], instr[15:11],
                 writereg);
-  mux2to1 wd3_sel(memtoreg, aluout, data, writereg);
+  mux2to1 wd3_sel(memtoreg, aluout, data, writedata);
   signext16to32 signextimm(instr[15:0], signimm);
   DFF aFF(clk, reset, rd1, a);
   DFF bFF(clk, reset, rd2, writedata);
 
   // ALU logic
-  mux4to1 srcb_sel(alusrcb, writedata, 4, signimm, signimmsh, srcb);
+  wire [31:0] four;
+  fourmodule numberfour(four);
+  mux4to1 srcb_sel(alusrcb, writedata, four, signimm, signimmsh, srcb);
   mux2to1 srca_sel(alusrca, pc, a, srca);
   alu alu(srca, srcb, alucontrol, aluresult, zero);
   DFF aluFF(clk, reset, aluresult, aluout);
   
+endmodule
+
+module fourmodule(output [31:0] four);
+assign four = 32'h4;
+  
+//  reg [31:0] four_constant;
+//  assign four = four_constant;
+//  initial begin  
+//    four_constant = 32'h4;
+//  end
 endmodule

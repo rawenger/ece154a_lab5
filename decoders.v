@@ -30,16 +30,14 @@ module main_decoder(
   output [1:0] alusrcb,
   output [1:0] pcsrc, aluop
 );
-  
-  integer ctrl, nextstate;
-
-  reg[8:0] ctrl;
-  assign {pcwrite, memwrite, irwrite, regwrite, alusrca,
+  wire dummywire;
+  reg[14:0] ctrl;
+  assign {dummywire, pcwrite, memwrite, irwrite, regwrite, alusrca,
           branch, iord, memtoreg, regdst, alusrcb, 
           pcsrc, aluop} = ctrl;
   
   always @(posedge rst) begin
-    ctrl <= FETCH;
+    ctrl <= `FETCH;
   end
 
   always @(posedge clk) begin
