@@ -46,20 +46,20 @@ module main_decoder(
       FETCH: ctrl <= DECODE;
       DECODE: 
         casex (op)
-          6'b000000: ctrl <= R_EXEC; // R-type
-          6'b000010: ctrl <= JMP_EXEC; // j
-          6'b000100: ctrl <= BR_EXEC; // beq
-          6'b001000: ctrl <= ADDI_EXEC; // addi
-          6'b10x011: ctrl <= MEM_ADR; // lw, sw
+          6'b000000: ctrl <= `R_EXEC; // R-type
+          6'b000010: ctrl <= `JMP_EXEC; // j
+          6'b000100: ctrl <= `BR_EXEC; // beq
+          6'b001000: ctrl <= `ADDI_EXEC; // addi
+          6'b10x011: ctrl <= `MEM_ADR; // lw, sw
           default: ctrl <= 'hxxxxxxxx; // invalid
         endcase
       MEM_ADR: 
         case (op)
-          6'b100011: ctrl <= MEM_READ; // lw
-          6'b101011: ctrl <= MEM_WB; // sw
+          6'b100011: ctrl <= `MEM_READ; // lw
+          6'b101011: ctrl <= `MEM_WB; // sw
           default: ctrl <= 'hxxxxxxxx; // invalid
         endcase
-      MEM_READ: ctrl <= MEM_WB;
+      MEM_READ: ctrl <= `MEM_WB;
       MEM_WB: ctrl <= FETCH;
       MEM_WRITE: ctrl <= FETCH;
       R_EXEC: ctrl <= ALU_WB;
