@@ -75,7 +75,7 @@ module DFF#(parameter width=32)
     output reg[width-1:0] q 
 );
   always @(posedge clk, posedge rst) begin
-    if (rst)
+    if (rst === 1'b1)
       q <= 0;
     else
       q <= d;
@@ -89,11 +89,11 @@ module DFFenb#(parameter width=32)
     input [width-1:0] d,
     output reg[width-1:0] q 
 );
-  always @(posedge clk, posedge rst) begin
-    if (enb) begin
-      if (rst)
-        q <= 0;
-      else
+  always @(posedge clk, posedge rst) begin  
+    if (rst === 1'b1) begin
+      q <= 0;
+    end else begin  
+      if (enb === 1'b1)
         q <= d;
     end
   end
