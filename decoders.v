@@ -27,10 +27,10 @@
 `define MEM_WRITE 'h2100 // 5
 `define R_EXEC    'h0402 // 6
 `define ALU_WB    'h0840 // 7
-`define BR_EXEC   'h0645 // 8
+`define BR_EXEC   'h0605 // 8
 `define ADDI_EXEC 'h0420 // 9
 `define ADDI_WB   'h0800 // 10
-`define JMP_EXEC  'h4428 // 11
+`define JMP_EXEC  'h4008 // 11
 
 module main_decoder(
   input clk, rst,
