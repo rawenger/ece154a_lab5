@@ -70,7 +70,6 @@ module datapath(input        clk, reset,
   wire [27:0] immsh;
   
   wire [31:0] srca, srcb, aluout;
-  wire [31:0] result;
   
   wire [31:0] rd1, rd2, wd3;
   
@@ -91,7 +90,6 @@ module datapath(input        clk, reset,
   DFF dataFF(clk, reset, readdata, data);
   
   // PC logic
-          // change pc to pcplus4 if j's don't work!
   assign pcjump = {pc[31:28], immsh};
   sll2 signsh(signimm, signimmsh);
   sll2#(26,28) sh(instr[25:0], immsh);
@@ -99,10 +97,6 @@ module datapath(input        clk, reset,
   mux4to1 pc_sel(pcsrc, aluresult, aluout, 
           pcjump, 0, pcnext);
   DFFenb pcFF(clk, reset, pcen, pcnext, pc);
-  
-//  mux2to1 pcbr_sel(pcsrc, pcplus4, pcbranch, pcnextbr);
-//  mux2to1 pc_sel(jump, pcnextbr, {pcplus4[31:28], instr[25:0], 2'b00}, 
-//                pcnext);
 
   // register file logic
   regfile regs(clk, regwrite, instr[25:21], instr[20:16],
