@@ -72,7 +72,7 @@ module datapath(input        clk, reset,
   wire [31:0] srca, srcb, aluout;
   wire [31:0] result;
   
-  wire [31:0] rd1, rd2;
+  wire [31:0] rd1, rd2, wd3;
   
   wire [31:0] aluresult;
   
@@ -86,7 +86,7 @@ module datapath(input        clk, reset,
   assign funct = instr[5:0];
   
   // memory data
-  mux2to1 data_sel(iord, pc, aluout, adr);
+  mux2to1 adr_sel(iord, pc, aluout, adr);
   DFFenb instrFF(clk, reset, irwrite, readdata, instr);
   DFF dataFF(clk, reset, readdata, data);
   
@@ -99,6 +99,9 @@ module datapath(input        clk, reset,
   mux4to1 pc_sel(pcsrc, aluresult, aluout, 
           pcjump, 0, pcnext);
   DFFenb pcFF(clk, reset, pcen, pcnext, pc);
+
+  // data logic
+  DFF dataFF(clk, reset, 
   
 //  mux2to1 pcbr_sel(pcsrc, pcplus4, pcbranch, pcnextbr);
 //  mux2to1 pc_sel(jump, pcnextbr, {pcplus4[31:28], instr[25:0], 2'b00}, 
@@ -106,10 +109,10 @@ module datapath(input        clk, reset,
 
   // register file logic
   regfile regs(clk, regwrite, instr[25:21], instr[20:16],
-                writereg, result, rd1, rd2);
+                writereg, wd3, rd1, rd2);
   mux2to1 #(5) a3_sel(regdst, instr[20:16], instr[15:11],
                 writereg);
-  mux2to1 wd3_sel(memtoreg, aluout, data, writedata);
+  mux2to1 wd3_sel(memtoreg, aluout, data, wd3);
   signext16to32 signextimm(instr[15:0], signimm);
   DFF aFF(clk, reset, rd1, a);
   DFF bFF(clk, reset, rd2, writedata);

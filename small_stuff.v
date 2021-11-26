@@ -17,7 +17,7 @@ module regfile(input clk,
   assign rd2 = (a2) ? registers[a2] : 0;
 
   always @(posedge clk) begin
-    if (we3)
+    if (we3 === 1'b1)
       registers[a3] <= wd3;
   end
 endmodule

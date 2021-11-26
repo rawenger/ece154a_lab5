@@ -44,14 +44,14 @@ module main_decoder(
   output [1:0] alusrcb,
   output [1:0] pcsrc, aluop
 );
-  reg[14:0] ctrl;
+  reg[15:0] ctrl;
   assign {pcwrite, memwrite, irwrite, regwrite, alusrca,
           branch, iord, memtoreg, regdst, alusrcb, 
-          pcsrc, aluop} = ctrl[13:0];
+          pcsrc, aluop} = ctrl[14:0];
   
   integer state;
   always @(posedge rst) begin
-    state = 0;
+    state <= 0;
     ctrl <= `FETCH;
   end
 
@@ -74,7 +74,7 @@ module main_decoder(
           default: state <= 'hxxxxxxxx; // invalid
         endcase
       3: state <= 4;
-      4: state <= 0;
+      4: state <= 5;
       5: state <= 0;
       6: state <= 7;
       7: state <= 0;

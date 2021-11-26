@@ -18,7 +18,7 @@ module tb();
   
   always @(negedge clk)
   begin
-    if (memwrite) begin
+    if (memwrite === 1'b1) begin
         // check results for memfile 1
       if (dataadr===84 & writedata===7) begin
         // check results for memfile 2
