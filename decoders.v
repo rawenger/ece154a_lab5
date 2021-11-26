@@ -30,46 +30,94 @@ module main_decoder(
   output [1:0] alusrcb,
   output [1:0] pcsrc, aluop
 );
-  wire dummywire;
   reg[14:0] ctrl;
-  assign {dummywire, pcwrite, memwrite, irwrite, regwrite, alusrca,
+  assign {pcwrite, memwrite, irwrite, regwrite, alusrca,
           branch, iord, memtoreg, regdst, alusrcb, 
-          pcsrc, aluop} = ctrl;
+          pcsrc, aluop} = ctrl[13:0];
   
+  integer state;
   always @(posedge rst) begin
+    state = 0;
     ctrl <= `FETCH;
   end
 
   always @(posedge clk) begin
-    case (ctrl)
-      `FETCH: ctrl <= `DECODE;
-      `DECODE: 
+    case (state)
+      0: state <= 1;
+      1: 
         casex (op)
-          6'b000000: ctrl <= `R_EXEC; // R-type
-          6'b000010: ctrl <= `JMP_EXEC; // j
-          6'b000100: ctrl <= `BR_EXEC; // beq
-          6'b001000: ctrl <= `ADDI_EXEC; // addi
-          6'b10x011: ctrl <= `MEM_ADR; // lw, sw
-          default: ctrl <= 'hxxxxxxxx; // invalid
+          6'b000000: state <= 6; // R-type
+          6'b000010: state <= 11; // j
+          6'b000100: state <= 8; // beq
+          6'b001000: state <= 9; // addi
+          6'b10x011: state <= 2; // lw, sw
+          default: state <= 'hxxxxxxxx; // invalid
         endcase
-      `MEM_ADR: 
+      2: 
         case (op)
-          6'b100011: ctrl <= `MEM_READ; // lw
-          6'b101011: ctrl <= `MEM_WB; // sw
-          default: ctrl <= 'hxxxxxxxx; // invalid
+          6'b100011: state <= 3; // lw
+          6'b101011: state <= 4; // sw
+          default: state <= 'hxxxxxxxx; // invalid
         endcase
-      `MEM_READ: ctrl <= `MEM_WB;
-      `MEM_WB: ctrl <= `FETCH;
-      `MEM_WRITE: ctrl <= `FETCH;
-      `R_EXEC: ctrl <= `ALU_WB;
-      `ALU_WB: ctrl <= `FETCH;
-      `BR_EXEC: ctrl <= `FETCH;
-      `ADDI_EXEC: ctrl <= `ADDI_WB;
-      `ADDI_WB: ctrl <= `FETCH;
-      `JMP_EXEC: ctrl <= `FETCH;
-      default: ctrl <= 'hxxxxxxxx;
+      3: state <= 4;
+      4: state <= 0;
+      5: state <= 0;
+      6: state <= 7;
+      7: state <= 0;
+      8: state <= 0;
+      9: state <= 10;
+      10: state <= 0;
+      11: state <= 0;
+      default: state <= 'hxxxxxxxx;
     endcase
   end
+  
+  always @(state) begin
+    case (state)
+      0: ctrl <= `FETCH;
+      1: ctrl <= `DECODE;
+      2: ctrl <= `MEM_ADR;
+      3: ctrl <= `MEM_READ;
+      4: ctrl <= `MEM_WB;
+      5: ctrl <= `MEM_WRITE;
+      6: ctrl <= `R_EXEC;
+      7: ctrl <= `ALU_WB;
+      8: ctrl <= BR_EXEC;
+      9: ctrl <= `ADDI_EXEC;
+      10: ctrl <= `ADDI_WB;
+      11: ctrl <= `JMP_EXEC;
+    endcase
+  end
+//  always @(posedge clk) begin
+//    case (ctrl)
+//      `FETCH: ctrl <= `DECODE;
+//      `DECODE: 
+//        casex (op)
+//          6'b000000: ctrl <= `R_EXEC; // R-type
+//          6'b000010: ctrl <= `JMP_EXEC; // j
+//          6'b000100: ctrl <= `BR_EXEC; // beq
+//          6'b001000: ctrl <= `ADDI_EXEC; // addi
+//          6'b10x011: ctrl <= `MEM_ADR; // lw, sw
+//          default: ctrl <= 'hxxxxxxxx; // invalid
+//        endcase
+//      `MEM_ADR: 
+//        case (op)
+//          6'b100011: ctrl <= `MEM_READ; // lw
+//          6'b101011: ctrl <= `MEM_WB; // sw
+//          default: ctrl <= 'hxxxxxxxx; // invalid
+//        endcase
+//      `MEM_READ: ctrl <= `MEM_WB;
+//      `MEM_WB: ctrl <= `FETCH;
+//      `MEM_WRITE: ctrl <= `FETCH;
+//      `R_EXEC: ctrl <= `ALU_WB;
+//      `ALU_WB: ctrl <= `FETCH;
+//      `BR_EXEC: ctrl <= `FETCH;
+//      `ADDI_EXEC: ctrl <= `ADDI_WB;
+//      `ADDI_WB: ctrl <= `FETCH;
+//      `JMP_EXEC: ctrl <= `FETCH;
+//      default: ctrl <= 'hxxxxxxxx;
+//    endcase
+//  end
 endmodule    
 
 module alu_decoder(input[5:0] funct,
