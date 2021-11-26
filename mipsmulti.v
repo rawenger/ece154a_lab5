@@ -76,7 +76,7 @@ module datapath(input        clk, reset,
   
   wire [31:0] aluresult;
   
-  reg [31:0] instr, data;
+  wire [31:0] instr, data;
   
   wire [31:0] pcjump, pc;
 
