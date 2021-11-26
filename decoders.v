@@ -4,19 +4,33 @@
  */
 
 // Controller FSM states
+//`define FETCH     'h5010 // 0 
+//`define DECODE    'h0030 // 1
+//`define MEM_ADR   'h0420 // 2
+//`define MEM_READ  'h0520 // 3
+//`define MEM_WB    'h0ca0 // 4
+//`define MEM_WRITE 'h25a0 // 5
+//`define R_EXEC    'h0482 // 6
+//`define ALU_WB    'h0c40 // 7
+//`define BR_EXEC   'h0645 // 8
+//`define ADDI_EXEC 'h0464 // 9
+//`define ADDI_WB   'h0c24 // 10
+//`define JMP_EXEC  'h4428 // 11
+
+
+// control words
 `define FETCH     'h5010 // 0 
 `define DECODE    'h0030 // 1
 `define MEM_ADR   'h0420 // 2
-`define MEM_READ  'h0520 // 3
-`define MEM_WB    'h0ca0 // 4
-`define MEM_WRITE 'h25a0 // 5
-`define R_EXEC    'h0482 // 6
-`define ALU_WB    'h0c40 // 7
+`define MEM_READ  'h0100 // 3
+`define MEM_WB    'h0880 // 4
+`define MEM_WRITE 'h2100 // 5
+`define R_EXEC    'h0402 // 6
+`define ALU_WB    'h0840 // 7
 `define BR_EXEC   'h0645 // 8
-`define ADDI_EXEC 'h0464 // 9
-`define ADDI_WB   'h0c24 // 10
+`define ADDI_EXEC 'h0420 // 9
+`define ADDI_WB   'h0800 // 10
 `define JMP_EXEC  'h4428 // 11
-
 
 module main_decoder(
   input clk, rst,
