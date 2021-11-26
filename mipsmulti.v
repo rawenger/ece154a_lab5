@@ -99,9 +99,6 @@ module datapath(input        clk, reset,
   mux4to1 pc_sel(pcsrc, aluresult, aluout, 
           pcjump, 0, pcnext);
   DFFenb pcFF(clk, reset, pcen, pcnext, pc);
-
-  // data logic
-  DFF dataFF(clk, reset, 
   
 //  mux2to1 pcbr_sel(pcsrc, pcplus4, pcbranch, pcnextbr);
 //  mux2to1 pc_sel(jump, pcnextbr, {pcplus4[31:28], instr[25:0], 2'b00}, 
@@ -111,7 +108,8 @@ module datapath(input        clk, reset,
   regfile regs(clk, regwrite, instr[25:21], instr[20:16],
                 writereg, wd3, rd1, rd2);
   mux2to1 #(5) a3_sel(regdst, instr[20:16], instr[15:11],
-                writereg);
+                      writereg);
+  
   mux2to1 wd3_sel(memtoreg, aluout, data, wd3);
   signext16to32 signextimm(instr[15:0], signimm);
   DFF aFF(clk, reset, rd1, a);
@@ -120,19 +118,9 @@ module datapath(input        clk, reset,
   // ALU logic
   wire [31:0] four;
   fourmodule numberfour(four);
-  mux4to1 srcb_sel(alusrcb, writedata, 4, signimm, signimmsh, srcb);
+  mux4to1 srcb_sel(alusrcb, writedata, 32'd4, signimm, signimmsh, srcb);
   mux2to1 srca_sel(alusrca, pc, a, srca);
   alu alu(srca, srcb, alucontrol, aluresult, zero);
   DFF aluFF(clk, reset, aluresult, aluout);
   
-endmodule
-
-module fourmodule(output [31:0] four);
-assign four = 32'h4;
-  
-//  reg [31:0] four_constant;
-//  assign four = four_constant;
-//  initial begin  
-//    four_constant = 32'h4;
-//  end
 endmodule
