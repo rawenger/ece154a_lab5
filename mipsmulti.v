@@ -110,8 +110,6 @@ module datapath(input        clk, reset,
   DFF bFF(clk, reset, rd2, writedata);
 
   // ALU logic
-  wire [31:0] four;
-  fourmodule numberfour(four);
   mux4to1 srcb_sel(alusrcb, writedata, 32'd4, signimm, signimmsh, srcb);
   mux2to1 srca_sel(alusrca, pc, a, srca);
   alu alu(srca, srcb, alucontrol, aluresult, zero);
