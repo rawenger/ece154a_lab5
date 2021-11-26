@@ -76,7 +76,7 @@ module datapath(input        clk, reset,
   
   wire [31:0] aluresult;
   
-  wire [31:0] instr, data;
+  reg [31:0] instr, data;
   
   wire [31:0] pcjump, pc;
 
@@ -91,12 +91,12 @@ module datapath(input        clk, reset,
   DFF dataFF(clk, reset, readdata, data);
   
   // PC logic
+          // change pc to pcplus4 if j's don't work!
   assign pcjump = {pc[31:28], immsh};
   sll2 signsh(signimm, signimmsh);
   sll2#(26,28) sh(instr[25:0], immsh);
 //  adder pcadd2(pcplus4, signimmsh, pcbranch);
   mux4to1 pc_sel(pcsrc, aluresult, aluout, 
-          // change pc to pcplus4 if j's don't work!
           pcjump, 0, pcnext);
   DFFenb pcFF(clk, reset, pcen, pcnext, pc);
   
@@ -117,7 +117,7 @@ module datapath(input        clk, reset,
   // ALU logic
   wire [31:0] four;
   fourmodule numberfour(four);
-  mux4to1 srcb_sel(alusrcb, writedata, four, signimm, signimmsh, srcb);
+  mux4to1 srcb_sel(alusrcb, writedata, 4, signimm, signimmsh, srcb);
   mux2to1 srca_sel(alusrca, pc, a, srca);
   alu alu(srca, srcb, alucontrol, aluresult, zero);
   DFF aluFF(clk, reset, aluresult, aluout);
