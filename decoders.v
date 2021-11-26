@@ -74,7 +74,7 @@ module main_decoder(
           default: state <= 'hxxxxxxxx; // invalid
         endcase
       3: state <= 4;
-      4: state <= 5;
+      4: state <= 0;
       5: state <= 0;
       6: state <= 7;
       7: state <= 0;
