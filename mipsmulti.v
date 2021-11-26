@@ -64,9 +64,9 @@ module datapath(input        clk, reset,
                 input [31:0] readdata
 );
 
-  wire [31:0] pcnext, pcnextbr, pcbranch;
+  wire [31:0] pc, pcnext, pcjump;
   wire [4:0] writereg;
-  wire [31:0] signimm, signimmsh, zeroimm;
+  wire [31:0] signimm, signimmsh;
   wire [27:0] immsh;
   
   wire [31:0] srca, srcb, aluout;
@@ -76,8 +76,6 @@ module datapath(input        clk, reset,
   wire [31:0] aluresult;
   
   wire [31:0] instr, data;
-  
-  wire [31:0] pcjump, pc;
 
   wire [31:0] a;
   
@@ -93,7 +91,6 @@ module datapath(input        clk, reset,
   assign pcjump = {pc[31:28], immsh};
   sll2 signsh(signimm, signimmsh);
   sll2#(26,28) sh(instr[25:0], immsh);
-//  adder pcadd2(pcplus4, signimmsh, pcbranch);
   mux4to1 pc_sel(pcsrc, aluresult, aluout, 
           pcjump, 0, pcnext);
   DFFenb pcFF(clk, reset, pcen, pcnext, pc);
