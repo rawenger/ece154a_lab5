@@ -96,7 +96,7 @@ module main_decoder(
       5: ctrl <= `MEM_WRITE;
       6: ctrl <= `R_EXEC;
       7: ctrl <= `ALU_WB;
-      8: ctrl <= BR_EXEC;
+      8: ctrl <= `BR_EXEC;
       9: ctrl <= `ADDI_EXEC;
       10: ctrl <= `ADDI_WB;
       11: ctrl <= `JMP_EXEC;
