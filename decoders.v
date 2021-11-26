@@ -70,7 +70,7 @@ module main_decoder(
       2: 
         case (op)
           6'b100011: state <= 3; // lw
-          6'b101011: state <= 4; // sw
+          6'b101011: state <= 5; // sw
           default: state <= 'hxxxxxxxx; // invalid
         endcase
       3: state <= 4;
